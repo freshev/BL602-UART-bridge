@@ -1,9 +1,5 @@
- /* app_main.c
- *
- * Copyright (C) 2017 ShangHai High-flying Electronics Technology Co.,Ltd.
- *
- * This file is part of HSF.
- *
+ /* 
+ * Copyright (C) freshev@github.com
  */
 
 #include <hsf.h>
