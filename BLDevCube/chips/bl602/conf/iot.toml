@@ -1,0 +1,37 @@
+[param]
+interface_type = "uart"
+comport_uart = "COM13"
+speed_uart = "921600"
+speed_jlink = "1000"
+bl60x_xtal = "40M"
+aes_key = ""
+aes_iv = ""
+ota = ""
+version = ""
+addr = "0x0"
+
+[check_box]
+factory = false
+partition_download = true
+boot2_download = true
+bin_download = true
+media_download = false
+use_romfs = false
+mfg_download = false
+ro_params_download = false
+ckb_erase_all = "False"
+encrypt = false
+sign = false
+download_single = false
+
+[input_path]
+dts_input = ""
+pt_bin_input = "Z:\\DotNet\\Asque\\EG41B\\BLDevCube\\chips\\bl602\\partition\\partition_cfg_HF_2M_V2.0.01.toml "
+boot2_bin_input = "Z:\\DotNet\\Asque\\EG41B\\BLDevCube\\chips\\bl602\\bootloader_HF_2M_V3.0.12.bin "
+cfg2_bin_input = "Z:\\DotNet\\Asque\\EG41B\\LPx70_SDK\\out\\lpt570.bin"
+media_bin_input = ""
+romfs_dir_input = ""
+mfg_bin_input = ""
+publickey = ""
+privatekey = ""
+img_bin_input = ""

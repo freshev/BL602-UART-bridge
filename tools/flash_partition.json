@@ -1,0 +1,70 @@
+﻿{
+    "flashsize": 2097152,
+    "partition": [
+        {
+            "name": "bootloader",
+            "address": "0x0",
+            "size": 69632
+        },
+        {
+            "name": "code",
+            "address": "0x11000",
+            "size": 937984
+        },
+        {
+            "name": "upgrade",
+            "address": "0xF6000",
+            "size": 573440
+        },
+		{
+            "name": "webpage",
+            "address": "0x182000",
+            "size": 204800
+        },
+		{
+            "name": "uflash",
+            "address": "0x1B4000",
+            "size": 204800
+        },
+        {
+            "name": "bootconfig",
+            "address": "0x1E6000",
+            "size": 4096
+        },
+        {
+            "name": "secuflash",
+            "address": "0x1E7000",
+            "size": 4096
+        },
+        {
+            "name": "userpage",
+            "address": "0x1E8000",
+            "size": 4096
+        },
+        {
+            "name": "userpage_backup",
+            "address": "0x1E9000",
+            "size": 4096
+        },
+        {
+            "name": "fsetting",
+            "address": "0x1EA000",
+            "size": 4096
+        },
+        {
+            "name": "tempflash",
+            "address": "0x1EB000",
+            "size": 4096
+        },
+        {
+            "name": "userbin",
+            "address": "0x1EC000",
+            "size": 8192
+        },
+        {
+            "name": "uflash1",
+            "address": "0x0",
+            "size": 0
+        }
+    ]
+}

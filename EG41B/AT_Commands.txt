@@ -1,0 +1,16 @@
+To Enter AT mode after start:
+1) Wait Welcome message like "HF2411B" or "EG41"
+2) Press "+++" -> host shows "a". Alternatively press "+++E"...
+3) Press "a" -> host shows ok
+4) You are in AT mode
+To Return to transparent mode - AT+ENTM
+
+
+AT+H:Show help
+AT+SMEM:show system memory stat (76 kB)
+
+AT+NDBGL=1,0 # debug to UART0 (main)
+AT+NDBGL=1,1 # debug to UART1
+AT+NDBGL=0,0 # turn off debug
+AT+SRST # reset
+AT+RELD # factory defaults
