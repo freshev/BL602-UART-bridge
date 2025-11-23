@@ -10,23 +10,22 @@ This makes Air780e direct access via UART1 to main EG41B RS232/RS485 out port.
 
 ### Windows
 1. Clone this repo:
-   ```bash
-   git clone https://github.com/freshev/BL602-UART-bridge
-   ```
+```bash
+git clone https://github.com/freshev/BL602-UART-bridge
+```
 
 2. Install [MSYS2](https://www.msys2.org/)
 
-3. Add MSYS2 \usr\bin to PATH environment variable 
-   like C:\msys64\usr\bin 
+3. Add MSYS2 \usr\bin to PATH environment variable like `C:\msys64\usr\bin`
 
 4. Run one of the following `makeXXX.bat`
-   ```bash
-   make9600_7.bat
-   make9600_8.bat
-   make115200_7.bat
-   make115200_8.bat
-   ```
-   I.e. `make9600_7.bat` makes a binary firmware for UART 0 to 1 bridge with baudrate 9600, 7N1, etc.
+```bash
+make9600_7.bat
+make9600_8.bat
+make115200_7.bat
+make115200_8.bat
+```
+I.e. `make9600_7.bat` makes a binary firmware for UART 0 to 1 bridge with baudrate 9600, 7N1, etc.
    
 ## Burn firmware
 
@@ -52,29 +51,29 @@ To test bridge:
 2) Open terminal on appeared new third (or second) COM port. 
 3) in (Air780e micropython)[https://github.com/freshev/micropython/tree/master/ports/air780] mode use following script: 
 ```python
-	from machine import UART
-	import time
-	u = UART(1, 9600)
-	while(True):
- 	if u.any() > 0:
-     	r = u.read()
-	        if r is not None and len(r) > 0:
- 	        print(r.decode(), end = '')
-     	    u.write(r)
-	    time.sleep_ms(10)
+from machine import UART
+import time
+u = UART(1, 9600)
+while(True):
+if u.any() > 0:
+ 	r = u.read()
+        if r is not None and len(r) > 0:
+        print(r.decode(), end = '')
+ 	    u.write(r)
+    time.sleep_ms(10)
 ```
 4) Symbols from BL602 UART0 (main EG41B input) should be printed in micropython and returned back to UART0. 
 
 
 ##  Notes
-There is no default debug output to EG41B board. 
-To make sure the firmware is working - compile and burn the firmware with `hfdbg_set_level(1)` at src/app_main.c 
-In this case you should see `[UART]` (with garbage) message at EG41B main port (PC USB/RS232/RS485 converter configured with 115200, 8N1). 
+* There is no default debug output to EG41B board. 
+* To make sure the firmware is working - compile and burn the firmware with `hfdbg_set_level(1)` at src/app_main.c 
+* In this case you should see `[UART]` (with garbage) message at EG41B main port (PC USB/RS232/RS485 converter configured with 115200, 8N1). 
 
 ## Known bugs
-Testing 9600 7N1 mode with real devices failed. 
-Testing 9600 8N1 mode with real devices success. 
+* Testing 9600 7N1 mode with real devices failed. 
+* Testing 9600 8N1 mode with real devices success. 
 
 ## Copyright
-FreeRTOS Kernel V10.2.1 Copyright (C) 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
-HiFlying HF-LPX70 SDK Copyright (C) 2017 ShangHai High-flying Electronics Technology Co.,Ltd.
+* FreeRTOS Kernel V10.2.1 Copyright (C) 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
+* HiFlying HF-LPX70 SDK Copyright (C) 2017 ShangHai High-flying Electronics Technology Co.,Ltd.
