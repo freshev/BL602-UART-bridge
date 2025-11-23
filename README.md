@@ -31,11 +31,11 @@ This makes Air780e direct access via UART1 to RS232/RS485 out port.
 ## Burn
 
 ### Windows
-   Burn with `SimpleFlasher`
-   1) Run `BLDevCube\BLDevCube.exe`
-   Select Partition table to `.\chips\bl602\partition\partition_cfg_HF_2M_V2.0.01.toml`
-   Select Boot2 Bin to `.\chips\bl602\bootloader_HF_2M_V3.0.12.bin `
-   Select Firmware Bin to `..\out\lpt570_full_9600_7.bin`
+   Burn with `SimpleFlasher`:
+   1) Run `BLDevCube\BLDevCube.exe` 
+   Select Partition table to `.\chips\bl602\partition\partition_cfg_HF_2M_V2.0.01.toml` 
+   Select Boot2 Bin to `.\chips\bl602\bootloader_HF_2M_V3.0.12.bin` 
+   Select Firmware Bin to `..\out\lpt570_full_9600_7.bin` 
 
    2) Connect Elfin EG41B via USB/RS232/RS485 converter to PC. Wires from USB/RS232/RS485 converter to EG41B board MUST be short (not more then 5cm).
    Otherwise, you will get errors/unstables when reading/writing flash. 
@@ -71,7 +71,7 @@ This makes Air780e direct access via UART1 to RS232/RS485 out port.
 ##  Notes
    There is no default debug output to EG41B board. 
    To make sure the firmware is working - burn the firmware with `hfdbg_set_level(1)` at src/app_main.c 
-   In this case you should see `[UART]` message at EG41B output port (converter configured with 115200, 8N1). 
+   In this case you should see `[UART]` (with garbage) message at EG41B output port (USB converter configured with 115200, 8N1). 
 
 
     
