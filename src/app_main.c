@@ -151,7 +151,7 @@ exit_thread:
 
 
 int USER_FUNC app_main (void) {	
-    hfdbg_set_level(1);
+    hfdbg_set_level(0);
     hfgpio_configure_pin(0x3830015,0x20000000); // To power on Air780e onboard chip 
 
 	if(hfgpio_fmap_check(g_module_id)!=0) {
