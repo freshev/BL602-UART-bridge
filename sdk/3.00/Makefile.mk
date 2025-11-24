@@ -22,7 +22,12 @@ COMPONENT_ADD_LDFLAGS += -L $(COMPONENT_PATH)/libs $(addprefix -T ,$(LINKER_SCRI
 COMPONENT_ADD_LINKER_DEPS := $(addprefix libs/,$(LINKER_SCRIPTS))
 
 ## This component's library 
+ifeq ($(DEBUG_VIA_BLE),1)
+LIBS ?= LPBX7Kernel_debug_ble
+else
 LIBS ?= LPBX7Kernel
+endif
+
 COMPONENT_ADD_LDFLAGS += -L$(COMPONENT_PATH)/libs $(addprefix -l,$(LIBS))
 ALL_LIB_FILES := $(patsubst %,$(COMPONENT_PATH)/libs/lib%.a,$(LIBS))
 COMPONENT_ADD_LINKER_DEPS := $(ALL_LIB_FILES)

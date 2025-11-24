@@ -3,9 +3,11 @@
  */
 
 #include <hsf.h>
-#include <hfsys.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
+#include <ble_ntf_thread.h>
+#include <ble_ind_thread.h>
 #include <hf_debug.h>
 
 const int hf_gpio_fid_to_pid_map_table[HFM_MAX_FUNC_CODE];
@@ -60,12 +62,88 @@ int hfble_scan_callback(PBLE_SCAN_RESULT_ITEM item) {
 	return 0;
 }
 
+extern int bl_uart_data_send(uint8_t id, uint8_t data);
+
+#ifdef DEBUG_VIA_BLE
+
+static int hf_debug_level = 0;
+static hfthread_mutex_t g_debug_lock = NULL_MUTEX;
+static char hf_debug_buf[512];
+
+void HSF_API HF_Debug(int debug_level, const char *format, ... ) {
+  size_t len;
+
+  va_list args;
+  va_start(args, format);  
+
+  if ((hf_debug_level <= debug_level) && (0 < hf_debug_level)) {
+    if (g_debug_lock == (hfthread_mutex_t)0x0) {
+      hfthread_mutext_new(&g_debug_lock);
+    }
+    hfthread_mutext_wait(g_debug_lock,0xffffffff);
+    memset(hf_debug_buf, 0, 512);
+    vsnprintf(hf_debug_buf, 511, format, args);
+    len = strlen(hf_debug_buf);
+    // if (g_hf_config_file.uart1_debug == 1) huart = HFUART1;
+    // else huart = HFUART0;
+    //hfuart_send(huart, hf_debug_buf, len, 1000);    
+    hf_send_ble_data((uint8_t*)hf_debug_buf, len);
+    hfthread_mutext_unlock(g_debug_lock);
+  }
+  va_end(args);
+}
+
+/*void HF_Debug(int debug_level, const char *format, ...) {
+  size_t len;
+  hfuart_handle_t huart;
+
+  va_list args;
+  va_start(args, format);  
+
+  if ((hf_debug_level <= debug_level) && (0 < hf_debug_level)) {
+    if (g_debug_lock == (hfthread_mutex_t)0x0) {
+      hfthread_mutext_new(&g_debug_lock);
+    }
+    hfthread_mutext_wait(g_debug_lock,0xffffffff);
+    memset(hf_debug_buf, 0, 512);
+    vsnprintf(hf_debug_buf, 511, format, args);
+    len = strlen(hf_debug_buf);
+    if (g_hf_config_file.uart1_debug == 1) huart = HFUART1;
+    else huart = HFUART0;
+    hfuart_send(huart, hf_debug_buf, len, 1000);
+    hfthread_mutext_unlock(g_debug_lock);
+  }
+  va_end(args);
+}*/
+
+int hfdbg_get_level(void) {
+  if (hfconfig_is_valid()) {
+    uint8_t config_debug_level = g_hf_config_file.debug_level;
+    if(config_debug_level != hf_debug_level) {
+    	hf_debug_level = config_debug_level;
+    }
+  }
+  return hf_debug_level;
+}
+void hfdbg_set_level(int level) {
+  if (level < 0) level = 0;
+  g_hf_config_file.debug_level = (uint8_t)level;
+  hf_debug_level = level;
+  hfconfig_file_save();
+  return;
+}
+
+int hfdbg_get_uartno(void) {
+  if (hfconfig_is_valid()) return (int)g_hf_config_file.uart1_debug;
+  else return 0;
+}
+
+#endif
+
 
 void app_init(void) {
 	u_printf("app_init\n");
 }
-
-extern int bl_uart_data_send(uint8_t id, uint8_t data);
 
 /*static int USER_FUNC uart_recv_callback(uint32_t event,char *data,uint32_t len,uint32_t buf_len) {
 	if(event == HFNET_UART0_DATA_READY) {
@@ -74,7 +152,7 @@ extern int bl_uart_data_send(uint8_t id, uint8_t data);
 	}
 
 	else if(event == HFNET_UART1_DATA_READY) {
-		// HF_Debug(DEBUG_LEVEL_LOW,"[%d]uart 1 recv %d bytes data %d\n",event,len,buf_len);
+		// u_printf("[%d]uart 1 recv %d bytes data %d\n",event,len,buf_len);
 		bl_uart_data_send(0, '1');
 		for(int i = 0; i < len; i++) bl_uart_data_send(0, data[i]);
 	}
@@ -102,7 +180,7 @@ USER_FUNC void uart_bridge(void* arg) {
 		u_printf("open UART1 fail\n");
 		goto exit_thread;
 	}
-	//HF_Debug(DEBUG_ERROR,"UART 1 opened\n");
+	//u_printf("UART 1 opened\n");
 
 	#if (BAUDRATE != 115200) && (BAUDRATE != 9600)
 	#error BAUDRATE should be 9600 or 115200 
@@ -135,6 +213,10 @@ USER_FUNC void uart_bridge(void* arg) {
 			for(int i = 0; i < recv_bytes; i++) bl_uart_data_send(0, buf1[i]);
 		}
 	}
+	// utils_bin2hex
+	// hf_send_ble_data -> hf_ble_tp_notify_write  (UUID: 00002B10, READ, NOTIFY) not acknowledged by client
+	// send_at_notify_data -> hf_ble_tp_notify_at_write
+	// hf_send_ble_ind_data -> hf_ble_tp_indicate_write (UUID: 0000FED6, INDICATE) should by acknowledged by client
 	
 exit_thread:
 	if(buf0 != NULL) hfmem_free(buf0);
@@ -145,19 +227,54 @@ exit_thread:
 	return;
 }
 
+static uint32_t bt_ntf_recv_callback( uint32_t event,uint8_t *data,uint8_t len,uint8_t buf_len) {
+	if(event==HFNET_BT_NTF_DATA_READY) {
+		// hf_send_ble_data(data,len);
+		u_printf("\nhf ble ntf recv %d bytes %d\n",len,buf_len);
+	}	
+	else if(event==HFNET_BT_NTF_DATA_ENABLE) u_printf("\nhf ble ntf connected!\n");
+	else if(event==HFNET_BT_NTF_DATA_DISENABLE) u_printf("\nhf ble ntf disconnected!\n");
+	return len;
+}
+
+static uint32_t bt_ind_recv_callback( uint32_t event,uint8_t *data,uint8_t len,uint8_t buf_len) {
+	if(event==HFNET_BT_IND_DATA_READY) {
+		// hf_send_ble_ind_data(data,len);
+		u_printf("\nhf ble ind recv %d bytes %d\n",len,buf_len);
+	}	
+	else if(event==HFNET_BT_IND_DATA_ENABLE) u_printf("\nhf ble ind connected!\n");
+	else if(event==HFNET_BT_IND_DATA_DISENABLE) u_printf("\nhf ble ind disconnected!\n");
+	return len;
+}
 
 int USER_FUNC app_main (void) {	
-    hfdbg_set_level(0);
+    hfdbg_set_level(1);
     hfgpio_configure_pin(0x3830015,0x20000000); // To power on Air780e onboard chip 
 
 	if(hfgpio_fmap_check(g_module_id)!=0) {
 		while(1) {
-			HF_Debug(DEBUG_ERROR,"gpio map file error\n");
+			u_printf("gpio map file error\n");
 			msleep(1000);
 		}
 	}
-	// if(hfnet_start_uart(HFTHREAD_PRIORITIES_LOW,(hfnet_callback_t)uart_recv_callback)!=HF_SUCCESS) HF_Debug(DEBUG_WARN,"start uart fail!\r\n");
+
+    if(hfnet_start_ble_ntf(HFTHREAD_PRIORITIES_LOW,(hfble_callback_t)bt_ntf_recv_callback)!=HF_SUCCESS)	{
+		u_printf("start ble ntf fail\r\n");
+	} else u_printf("start ble ntf success\r\n");
+	
+	if(hfnet_start_ble_ind(HFTHREAD_PRIORITIES_LOW,(hfble_callback_t)bt_ind_recv_callback)!=HF_SUCCESS)	{
+		u_printf("start ble ind fail\r\n");
+	} else u_printf("start ind success\r\n");
+	
+	if(hf_ble_start_switch() == CONFIG_BLE_ON && hf_get_ble_run_mode() == HF_BLE_RUN_THROUGHT_MODE)	{
+		hf_start_ble();
+	} else u_printf("start ble success\r\n");
+
+	msleep(10000); // to manually start BLE scanner
+	
+	// if(hfnet_start_uart(HFTHREAD_PRIORITIES_LOW,(hfnet_callback_t)uart_recv_callback)!=HF_SUCCESS) u_printf("start uart fail!\r\n");
 	hfthread_create(uart_bridge, "uart_bridge", 256, NULL, HFTHREAD_PRIORITIES_LOW, NULL,NULL);
+
 	while(true) msleep(100);
 	return 1;
 }

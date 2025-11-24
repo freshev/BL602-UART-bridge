@@ -2,6 +2,15 @@
 # This is a project Makefile. It is assumed the directory this Makefile resides in is a
 # project subdirectory.
 #
+
+DEBUG_VIA_BLE = 1
+BAUDRATE ?= 115200
+DATABITS = 8
+
+$(info DEBUG_VIA_BLE is $(DEBUG_VIA_BLE))
+$(info BAUDRATE is $(BAUDRATE))
+$(info DATABITS is $(DATABITS))
+
 ifeq ($(PROJECT_NAME),lpt270)
 TARGET = __LPT270__
 else ifeq ($(PROJECT_NAME),lpt170)
@@ -36,7 +45,7 @@ endif
 AFTER_BUILD =
 
 EXAMPLE_NAME ?= null
-#EXAMPLE_NAME =
+#EXAMPLE_NAME = ble
 SDK_VERSION = 3.00
 
 ifeq ($(EXAMPLE_NAME),null)
@@ -57,7 +66,11 @@ else ifeq ($(EXAMPLE_NAME), websocket)
 APPDIR += websocket-c websocketclient
 endif
 
-BAUDRATE ?= 115200
+ifeq ($(DEBUG_VIA_BLE),1)
+	CFLAGS   += -DDEBUG_VIA_BLE
+	export DEBUG_VIA_BLE
+endif
+
 CFLAGS   += -DBAUDRATE=$(BAUDRATE)
 
 ifeq ($(DATABITS),7)

@@ -74,6 +74,6 @@ if u.any() > 0:
 * Testing 9600 7N1 mode with real devices failed. 
 * Testing 9600 8N1 mode with real devices success. 
 
-## Copyright
+## Copyrights
 * FreeRTOS Kernel V10.2.1 Copyright (C) 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
 * HiFlying HF-LPX70 SDK Copyright (C) 2017 ShangHai High-flying Electronics Technology Co.,Ltd.
