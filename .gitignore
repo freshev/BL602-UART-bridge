@@ -1,3 +1,7 @@
 out/
 log/
 a.bat
+BLEDebug/bin/
+BLEDebug/obj/
+BLEDebug/BLEDevice/bin/
+BLEDebug/BLEDevice/obj/

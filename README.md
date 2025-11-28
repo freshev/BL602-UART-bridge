@@ -66,9 +66,11 @@ if u.any() > 0:
 
 
 ##  Notes
-* There is no default debug output to EG41B board. 
+* The new designed `BLEDebug` simple application can show debug output from BLE602 chip. See BLEDebug folder. 
+* Default lib `LPBX7Kernel` was rewritten to redirect chip debug log to Bluetooth. Also changes made in some project `.mk` files.
 * To make sure the firmware is working - compile and burn the firmware with `hfdbg_set_level(1)` at src/app_main.c 
 * In this case you should see `[UART]` (with garbage) message at EG41B main port (PC USB/RS232/RS485 converter configured with 115200, 8N1). 
+* To completely disable debug log compile and burn the firmware with `hfdbg_set_level(0)` at src/app_main.c 
 
 ## Known bugs
 * Testing 9600 7N1 mode with real devices failed. 

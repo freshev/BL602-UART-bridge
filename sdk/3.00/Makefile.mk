@@ -23,7 +23,7 @@ COMPONENT_ADD_LINKER_DEPS := $(addprefix libs/,$(LINKER_SCRIPTS))
 
 ## This component's library 
 ifeq ($(DEBUG_VIA_BLE),1)
-LIBS ?= LPBX7Kernel_debug_ble
+LIBS ?= LPBX7Kernel_no_debug
 else
 LIBS ?= LPBX7Kernel
 endif

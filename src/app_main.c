@@ -69,51 +69,47 @@ extern int bl_uart_data_send(uint8_t id, uint8_t data);
 static int hf_debug_level = 0;
 static hfthread_mutex_t g_debug_lock = NULL_MUTEX;
 static char hf_debug_buf[512];
+static uint8_t send_buf[512];
 
-void HSF_API HF_Debug(int debug_level, const char *format, ... ) {
-  size_t len;
-
-  va_list args;
-  va_start(args, format);  
+void HSF_API HF_Debug(int debug_level, const char *format, ... ) {  
 
   if ((hf_debug_level <= debug_level) && (0 < hf_debug_level)) {
-    if (g_debug_lock == (hfthread_mutex_t)0x0) {
-      hfthread_mutext_new(&g_debug_lock);
-    }
-    hfthread_mutext_wait(g_debug_lock,0xffffffff);
-    memset(hf_debug_buf, 0, 512);
-    vsnprintf(hf_debug_buf, 511, format, args);
+    va_list args;
+    va_start(args, format);
+    va_end(args);
+    size_t len;
+
+    if (g_debug_lock == NULL_MUTEX) hfthread_mutext_new(&g_debug_lock);    
+    hfthread_mutext_lock(g_debug_lock);
+
+    memset(hf_debug_buf, 0, sizeof(hf_debug_buf));
+    vsnprintf(hf_debug_buf, sizeof(hf_debug_buf) - 1, format, args);
     len = strlen(hf_debug_buf);
-    // if (g_hf_config_file.uart1_debug == 1) huart = HFUART1;
-    // else huart = HFUART0;
-    //hfuart_send(huart, hf_debug_buf, len, 1000);    
-    hf_send_ble_data((uint8_t*)hf_debug_buf, len);
+    hf_send_ble_data((uint8_t*)hf_debug_buf, len); // send notify
     hfthread_mutext_unlock(g_debug_lock);
-  }
-  va_end(args);
+  }  
 }
 
 /*void HF_Debug(int debug_level, const char *format, ...) {
   size_t len;
   hfuart_handle_t huart;
 
-  va_list args;
-  va_start(args, format);  
-
   if ((hf_debug_level <= debug_level) && (0 < hf_debug_level)) {
-    if (g_debug_lock == (hfthread_mutex_t)0x0) {
-      hfthread_mutext_new(&g_debug_lock);
-    }
-    hfthread_mutext_wait(g_debug_lock,0xffffffff);
-    memset(hf_debug_buf, 0, 512);
-    vsnprintf(hf_debug_buf, 511, format, args);
+    va_list args;
+    va_start(args, format);  
+
+    if (g_debug_lock == NULL_MUTEX) hfthread_mutext_new(&g_debug_lock);    
+    hfthread_mutext_lock(g_debug_lock);
+
+    memset(hf_debug_buf, 0, sizeof(hf_debug_buf));
+    vsnprintf(hf_debug_buf, sizeof(hf_debug_buf) - 1, format, args);
     len = strlen(hf_debug_buf);
     if (g_hf_config_file.uart1_debug == 1) huart = HFUART1;
     else huart = HFUART0;
     hfuart_send(huart, hf_debug_buf, len, 1000);
     hfthread_mutext_unlock(g_debug_lock);
-  }
-  va_end(args);
+    va_end(args);
+  }  
 }*/
 
 int hfdbg_get_level(void) {
@@ -161,6 +157,55 @@ void app_init(void) {
 	return len;
 }*/
 
+// utils_bin2hex
+// hf_send_ble_data -> hf_ble_tp_notify_write  (UUID: 00002B10, READ, NOTIFY) not acknowledged by client
+// send_at_notify_data -> hf_ble_tp_notify_at_write
+// hf_send_ble_ind_data -> hf_ble_tp_indicate_write (UUID: 0000FED6, INDICATE) should by acknowledged by client
+
+extern char * utils_bin2hex(uint8_t *dst, uint8_t *src, size_t count);
+uint8_t * utils_bin2hex_space(uint8_t *dst, uint8_t *src, size_t count) {
+  uint8_t *char2;
+  uint8_t *lastchar;
+  uint8_t char1;
+  
+  lastchar = (uint8_t *)((int)src + count);
+  char2 = dst;
+  for (; (uint8_t *)src != lastchar; src = (void *)((int)src + 1)) {
+    char1 = "0123456789ABCDEF"[*src & 0xf];
+    *char2 = "0123456789ABCDEF"[*src >> 4];
+    char2[1] = char1;
+    char2[2] = ' ';
+    char2 = char2 + 3;
+  }
+  return dst + count * 3;
+}
+
+void send_ind_data(int direction, uint8_t* buf, int len) {
+    uint8_t timebuf[8];
+	if(hf_debug_level > 0) {
+	    memset(send_buf, 0, sizeof(send_buf));
+	    uint32_t t = hfsys_get_time();
+	    utils_bin2hex(timebuf, (uint8_t*)&t, 8);
+	    send_buf[0] = timebuf[6];
+	    send_buf[1] = timebuf[7];
+	    send_buf[2] = timebuf[4];
+	    send_buf[3] = timebuf[5];
+	    send_buf[4] = timebuf[2];
+	    send_buf[5] = timebuf[3];
+	    send_buf[6] = timebuf[0];
+	    send_buf[7] = timebuf[1];
+	    send_buf[8] = ' ';
+	    send_buf[9] = (direction == 0) ? '0' : '1';
+	    send_buf[10] = ':';
+	    send_buf[11] = ' ';
+	    int minlen = LWIP_MIN(sizeof(send_buf) - 13, len );
+	    uint8_t *lastchar = utils_bin2hex_space(send_buf + 12, buf, minlen);
+	    *(lastchar + 1) = '0';
+	    hf_send_ble_ind_data(send_buf, strlen((char*)send_buf));
+	    u_printf((char*)send_buf);
+	}
+}
+
 USER_FUNC void uart_bridge(void* arg) {
 
 	hfuart_handle_t huart0 = NULL;
@@ -207,16 +252,14 @@ USER_FUNC void uart_bridge(void* arg) {
 		recv_bytes = hfuart_recv(huart0, buf0, 1000, 1000);
 		if(recv_bytes > 0) {
 			for(int i = 0; i < recv_bytes; i++) bl_uart_data_send(1, buf0[i]);
+			if(hf_debug_level > 0) send_ind_data(0, (uint8_t*)buf0, recv_bytes);
 		}
 		recv_bytes = hfuart_recv(huart1, buf1, 1000, 1000);
 		if(recv_bytes > 0) {
 			for(int i = 0; i < recv_bytes; i++) bl_uart_data_send(0, buf1[i]);
+			if(hf_debug_level > 0) send_ind_data(1, (uint8_t*)buf1, recv_bytes);
 		}
 	}
-	// utils_bin2hex
-	// hf_send_ble_data -> hf_ble_tp_notify_write  (UUID: 00002B10, READ, NOTIFY) not acknowledged by client
-	// send_at_notify_data -> hf_ble_tp_notify_at_write
-	// hf_send_ble_ind_data -> hf_ble_tp_indicate_write (UUID: 0000FED6, INDICATE) should by acknowledged by client
 	
 exit_thread:
 	if(buf0 != NULL) hfmem_free(buf0);
@@ -227,23 +270,19 @@ exit_thread:
 	return;
 }
 
+// notification
 static uint32_t bt_ntf_recv_callback( uint32_t event,uint8_t *data,uint8_t len,uint8_t buf_len) {
-	if(event==HFNET_BT_NTF_DATA_READY) {
-		// hf_send_ble_data(data,len);
-		u_printf("\nhf ble ntf recv %d bytes %d\n",len,buf_len);
-	}	
-	else if(event==HFNET_BT_NTF_DATA_ENABLE) u_printf("\nhf ble ntf connected!\n");
-	else if(event==HFNET_BT_NTF_DATA_DISENABLE) u_printf("\nhf ble ntf disconnected!\n");
+	if(event==HFNET_BT_NTF_DATA_READY) u_printf("hf ble ntf recv %d bytes %d\n",len,buf_len);
+	else if(event==HFNET_BT_NTF_DATA_ENABLE) u_printf("hf ble ntf connected!\n");
+	else if(event==HFNET_BT_NTF_DATA_DISENABLE) u_printf("hf ble ntf disconnected!\n");
 	return len;
 }
 
+// indication
 static uint32_t bt_ind_recv_callback( uint32_t event,uint8_t *data,uint8_t len,uint8_t buf_len) {
-	if(event==HFNET_BT_IND_DATA_READY) {
-		// hf_send_ble_ind_data(data,len);
-		u_printf("\nhf ble ind recv %d bytes %d\n",len,buf_len);
-	}	
-	else if(event==HFNET_BT_IND_DATA_ENABLE) u_printf("\nhf ble ind connected!\n");
-	else if(event==HFNET_BT_IND_DATA_DISENABLE) u_printf("\nhf ble ind disconnected!\n");
+	if(event==HFNET_BT_IND_DATA_READY) u_printf("hf ble ind recv %d bytes %d\n",len,buf_len);
+	else if(event==HFNET_BT_IND_DATA_ENABLE) u_printf("hf ble ind connected!\n");
+	else if(event==HFNET_BT_IND_DATA_DISENABLE) u_printf("hf ble ind disconnected!\n");
 	return len;
 }
 
@@ -251,7 +290,7 @@ int USER_FUNC app_main (void) {
     hfdbg_set_level(1);
     hfgpio_configure_pin(0x3830015,0x20000000); // To power on Air780e onboard chip 
 
-	if(hfgpio_fmap_check(g_module_id)!=0) {
+	if(hfgpio_fmap_check(g_module_id) != 0) {
 		while(1) {
 			u_printf("gpio map file error\n");
 			msleep(1000);
@@ -270,7 +309,7 @@ int USER_FUNC app_main (void) {
 		hf_start_ble();
 	} else u_printf("start ble success\r\n");
 
-	msleep(10000); // to manually start BLE scanner
+	// msleep(10000); // to manually start BLE scanner
 	
 	// if(hfnet_start_uart(HFTHREAD_PRIORITIES_LOW,(hfnet_callback_t)uart_recv_callback)!=HF_SUCCESS) u_printf("start uart fail!\r\n");
 	hfthread_create(uart_bridge, "uart_bridge", 256, NULL, HFTHREAD_PRIORITIES_LOW, NULL,NULL);
