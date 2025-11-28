@@ -277,5 +277,11 @@ namespace BLEDebug {
             return finalres;
         }
         #endregion
+
+        private void buttonClear_Click(object sender, EventArgs e) {
+            richTextBoxATDebug.ResetText();
+            richTextBoxBLEDebug.ResetText();
+            richTextBoxUARTDebug.ResetText();
+        }
     }
 }

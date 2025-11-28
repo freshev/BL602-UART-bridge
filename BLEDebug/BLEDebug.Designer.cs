@@ -35,11 +35,12 @@
             this.groupBoxUARTDebug = new System.Windows.Forms.GroupBox();
             this.richTextBoxUARTDebug = new System.Windows.Forms.RichTextBox();
             this.groupBoxATDebug = new System.Windows.Forms.GroupBox();
+            this.comboBoxAT = new System.Windows.Forms.ComboBox();
             this.buttonSendAT = new System.Windows.Forms.Button();
             this.textBoxAT = new System.Windows.Forms.TextBox();
             this.richTextBoxATDebug = new System.Windows.Forms.RichTextBox();
             this.buttonReconnect = new System.Windows.Forms.Button();
-            this.comboBoxAT = new System.Windows.Forms.ComboBox();
+            this.buttonClear = new System.Windows.Forms.Button();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -70,9 +71,9 @@
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLog});
-            this.statusStrip.Location = new System.Drawing.Point(0, 449);
+            this.statusStrip.Location = new System.Drawing.Point(0, 631);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1085, 22);
+            this.statusStrip.Size = new System.Drawing.Size(982, 22);
             this.statusStrip.TabIndex = 1;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -89,7 +90,7 @@
             this.panel1.Controls.Add(this.splitContainer1);
             this.panel1.Location = new System.Drawing.Point(13, 43);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1060, 403);
+            this.panel1.Size = new System.Drawing.Size(957, 585);
             this.panel1.TabIndex = 2;
             // 
             // splitContainer1
@@ -105,8 +106,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(1060, 403);
-            this.splitContainer1.SplitterDistance = 500;
+            this.splitContainer1.Size = new System.Drawing.Size(957, 585);
+            this.splitContainer1.SplitterDistance = 451;
             this.splitContainer1.TabIndex = 0;
             this.splitContainer1.TabStop = false;
             // 
@@ -116,7 +117,7 @@
             this.groupBoxDebug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxDebug.Location = new System.Drawing.Point(0, 0);
             this.groupBoxDebug.Name = "groupBoxDebug";
-            this.groupBoxDebug.Size = new System.Drawing.Size(500, 403);
+            this.groupBoxDebug.Size = new System.Drawing.Size(451, 585);
             this.groupBoxDebug.TabIndex = 0;
             this.groupBoxDebug.TabStop = false;
             this.groupBoxDebug.Text = "BLE Debug";
@@ -128,7 +129,7 @@
             this.richTextBoxBLEDebug.Location = new System.Drawing.Point(3, 18);
             this.richTextBoxBLEDebug.Name = "richTextBoxBLEDebug";
             this.richTextBoxBLEDebug.ReadOnly = true;
-            this.richTextBoxBLEDebug.Size = new System.Drawing.Size(494, 382);
+            this.richTextBoxBLEDebug.Size = new System.Drawing.Size(445, 564);
             this.richTextBoxBLEDebug.TabIndex = 0;
             this.richTextBoxBLEDebug.TabStop = false;
             this.richTextBoxBLEDebug.Text = "";
@@ -148,8 +149,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBoxATDebug);
-            this.splitContainer2.Size = new System.Drawing.Size(556, 403);
-            this.splitContainer2.SplitterDistance = 234;
+            this.splitContainer2.Size = new System.Drawing.Size(502, 585);
+            this.splitContainer2.SplitterDistance = 339;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.TabStop = false;
             // 
@@ -159,7 +160,7 @@
             this.groupBoxUARTDebug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxUARTDebug.Location = new System.Drawing.Point(0, 0);
             this.groupBoxUARTDebug.Name = "groupBoxUARTDebug";
-            this.groupBoxUARTDebug.Size = new System.Drawing.Size(556, 234);
+            this.groupBoxUARTDebug.Size = new System.Drawing.Size(502, 339);
             this.groupBoxUARTDebug.TabIndex = 0;
             this.groupBoxUARTDebug.TabStop = false;
             this.groupBoxUARTDebug.Text = "UART 0/1 Debug";
@@ -171,7 +172,7 @@
             this.richTextBoxUARTDebug.Location = new System.Drawing.Point(3, 18);
             this.richTextBoxUARTDebug.Name = "richTextBoxUARTDebug";
             this.richTextBoxUARTDebug.ReadOnly = true;
-            this.richTextBoxUARTDebug.Size = new System.Drawing.Size(550, 213);
+            this.richTextBoxUARTDebug.Size = new System.Drawing.Size(496, 318);
             this.richTextBoxUARTDebug.TabIndex = 0;
             this.richTextBoxUARTDebug.TabStop = false;
             this.richTextBoxUARTDebug.Text = "";
@@ -179,6 +180,7 @@
             // 
             // groupBoxATDebug
             // 
+            this.groupBoxATDebug.Controls.Add(this.buttonClear);
             this.groupBoxATDebug.Controls.Add(this.comboBoxAT);
             this.groupBoxATDebug.Controls.Add(this.buttonSendAT);
             this.groupBoxATDebug.Controls.Add(this.textBoxAT);
@@ -186,17 +188,28 @@
             this.groupBoxATDebug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxATDebug.Location = new System.Drawing.Point(0, 0);
             this.groupBoxATDebug.Name = "groupBoxATDebug";
-            this.groupBoxATDebug.Size = new System.Drawing.Size(556, 165);
+            this.groupBoxATDebug.Size = new System.Drawing.Size(502, 242);
             this.groupBoxATDebug.TabIndex = 0;
             this.groupBoxATDebug.TabStop = false;
             this.groupBoxATDebug.Text = "AT Debug";
             // 
+            // comboBoxAT
+            // 
+            this.comboBoxAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxAT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxAT.FormattingEnabled = true;
+            this.comboBoxAT.Location = new System.Drawing.Point(288, 214);
+            this.comboBoxAT.Name = "comboBoxAT";
+            this.comboBoxAT.Size = new System.Drawing.Size(121, 24);
+            this.comboBoxAT.TabIndex = 2;
+            this.comboBoxAT.SelectedIndexChanged += new System.EventHandler(this.comboBoxAT_SelectedIndexChanged);
+            // 
             // buttonSendAT
             // 
             this.buttonSendAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSendAT.Location = new System.Drawing.Point(308, 136);
+            this.buttonSendAT.Location = new System.Drawing.Point(203, 213);
             this.buttonSendAT.Name = "buttonSendAT";
-            this.buttonSendAT.Size = new System.Drawing.Size(115, 26);
+            this.buttonSendAT.Size = new System.Drawing.Size(79, 26);
             this.buttonSendAT.TabIndex = 1;
             this.buttonSendAT.Text = "Send";
             this.buttonSendAT.UseVisualStyleBackColor = true;
@@ -207,9 +220,9 @@
             this.textBoxAT.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxAT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBoxAT.Location = new System.Drawing.Point(7, 137);
+            this.textBoxAT.Location = new System.Drawing.Point(7, 214);
             this.textBoxAT.Name = "textBoxAT";
-            this.textBoxAT.Size = new System.Drawing.Size(295, 22);
+            this.textBoxAT.Size = new System.Drawing.Size(190, 22);
             this.textBoxAT.TabIndex = 0;
             // 
             // richTextBoxATDebug
@@ -221,7 +234,7 @@
             this.richTextBoxATDebug.Location = new System.Drawing.Point(7, 22);
             this.richTextBoxATDebug.Name = "richTextBoxATDebug";
             this.richTextBoxATDebug.ReadOnly = true;
-            this.richTextBoxATDebug.Size = new System.Drawing.Size(543, 109);
+            this.richTextBoxATDebug.Size = new System.Drawing.Size(489, 186);
             this.richTextBoxATDebug.TabIndex = 0;
             this.richTextBoxATDebug.TabStop = false;
             this.richTextBoxATDebug.Text = "";
@@ -238,23 +251,22 @@
             this.buttonReconnect.UseVisualStyleBackColor = true;
             this.buttonReconnect.Click += new System.EventHandler(this.buttonReconnect_Click);
             // 
-            // comboBoxAT
+            // buttonClear
             // 
-            this.comboBoxAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxAT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxAT.FormattingEnabled = true;
-            this.comboBoxAT.Location = new System.Drawing.Point(429, 136);
-            this.comboBoxAT.Name = "comboBoxAT";
-            this.comboBoxAT.Size = new System.Drawing.Size(121, 24);
-            this.comboBoxAT.TabIndex = 2;
-            this.comboBoxAT.SelectedIndexChanged += new System.EventHandler(this.comboBoxAT_SelectedIndexChanged);
+            this.buttonClear.Location = new System.Drawing.Point(414, 214);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(81, 25);
+            this.buttonClear.TabIndex = 3;
+            this.buttonClear.Text = "Clear";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
             // BLEDebug
             // 
             this.AcceptButton = this.buttonSendAT;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1085, 471);
+            this.ClientSize = new System.Drawing.Size(982, 653);
             this.Controls.Add(this.buttonReconnect);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip);
@@ -305,6 +317,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxATDebug;
         private System.Windows.Forms.Button buttonReconnect;
         private System.Windows.Forms.ComboBox comboBoxAT;
+        private System.Windows.Forms.Button buttonClear;
     }
 }
 
