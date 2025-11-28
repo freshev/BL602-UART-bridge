@@ -17,10 +17,11 @@ namespace BLEDebug {
         private static Characteristic ind = null;
         private static Characteristic atcmd = null;
         private List<string> ATHistory = new List<string>();
+        private List<string> ATCommands = new List<string>();
 
         public BLEDebug() {
             InitializeComponent();
-
+            ATCommands.AddRange(new string[] { "", "AT+UART=0", "AT+UART=1", "AT+UARTTM", "AT+UARTBUF", "AT+WEL", "AT+TMODE", "AT+ENTM", "AT+MID", "AT+NDBGL", "AT+SMEM", "AT+FLASH", "AT+VER", "AT+BLE", "AT+BLENAME", "AT+BLENTFUUIDS", "" });
         }
 
         private void BLEDebug_Load(object sender, EventArgs e) {
@@ -31,6 +32,7 @@ namespace BLEDebug {
                     comboBoxDevices.SelectedItem = name;
                 }
             }
+            comboBoxAT.Items.AddRange(ATCommands.ToArray());
         }
 
         private void OpenDevice(string name) {
@@ -182,22 +184,15 @@ namespace BLEDebug {
     
         private void buttonSendAT_Click(object sender, EventArgs e) {
             if (!"".Equals(textBoxAT.Text)) {
-                string s = textBoxAT.Text + "\n";
-                AddATDebugText("-> " + s);
-                if (atcmd != null) {
-                    bool res = atcmd.Write(Encoding.UTF8.GetBytes(s));
-                    if (res == false) {
-                        // try to reopen device
-                        if (ble != null) ble.Close();
-                        OpenDevice(comboBoxDevices.SelectedItem.ToString());
-                        bool res2 = atcmd.Write(Encoding.UTF8.GetBytes(s));
-                        if (res2 == true) SetStatusText("AT command sent");
-                        else SetStatusText("AT command NOT sent");
-                    } else SetStatusText("AT command sent");
-                }
-                if (ATHistory.Count > ATHistoryLength) ATHistory.RemoveAt(ATHistory.Count - 1);
-                ATHistory.Insert(0, textBoxAT.Text);
+                RunCommand(textBoxAT.Text + "\n");
                 textBoxAT.Text = "";
+            }
+        }
+
+        private void comboBoxAT_SelectedIndexChanged(object sender, EventArgs e) {
+            if (!"".Equals(comboBoxAT.Text)) {
+                RunCommand(comboBoxAT.Text + "\n");
+                comboBoxAT.SelectedIndex = 0;
             }
         }
 
@@ -256,5 +251,31 @@ namespace BLEDebug {
                 Cursor = Cursors.Arrow;
             }
         }
+
+        #region RunCommand
+        private bool RunCommand(string s) {
+            bool finalres = false;
+            AddATDebugText("-> " + s);
+            if (atcmd != null) {
+                bool res = atcmd.Write(Encoding.UTF8.GetBytes(s));
+                if (res == false) {
+                    // try to reopen device
+                    if (ble != null) ble.Close();
+                    OpenDevice(comboBoxDevices.SelectedItem.ToString());
+                    bool res2 = atcmd.Write(Encoding.UTF8.GetBytes(s));
+                    if (res2 == true) {
+                        SetStatusText("AT command sent");
+                        finalres = true;
+                    } else SetStatusText("AT command NOT sent");
+                } else {
+                    SetStatusText("AT command sent");
+                    finalres = true;
+                }
+            }
+            if (ATHistory.Count > ATHistoryLength) ATHistory.RemoveAt(ATHistory.Count - 1);
+            ATHistory.Insert(0, textBoxAT.Text);
+            return finalres;
+        }
+        #endregion
     }
 }

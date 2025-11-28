@@ -39,6 +39,7 @@
             this.textBoxAT = new System.Windows.Forms.TextBox();
             this.richTextBoxATDebug = new System.Windows.Forms.RichTextBox();
             this.buttonReconnect = new System.Windows.Forms.Button();
+            this.comboBoxAT = new System.Windows.Forms.ComboBox();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -178,6 +179,7 @@
             // 
             // groupBoxATDebug
             // 
+            this.groupBoxATDebug.Controls.Add(this.comboBoxAT);
             this.groupBoxATDebug.Controls.Add(this.buttonSendAT);
             this.groupBoxATDebug.Controls.Add(this.textBoxAT);
             this.groupBoxATDebug.Controls.Add(this.richTextBoxATDebug);
@@ -192,9 +194,9 @@
             // buttonSendAT
             // 
             this.buttonSendAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSendAT.Location = new System.Drawing.Point(435, 136);
+            this.buttonSendAT.Location = new System.Drawing.Point(308, 136);
             this.buttonSendAT.Name = "buttonSendAT";
-            this.buttonSendAT.Size = new System.Drawing.Size(115, 23);
+            this.buttonSendAT.Size = new System.Drawing.Size(115, 26);
             this.buttonSendAT.TabIndex = 1;
             this.buttonSendAT.Text = "Send";
             this.buttonSendAT.UseVisualStyleBackColor = true;
@@ -207,7 +209,7 @@
             this.textBoxAT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxAT.Location = new System.Drawing.Point(7, 137);
             this.textBoxAT.Name = "textBoxAT";
-            this.textBoxAT.Size = new System.Drawing.Size(421, 22);
+            this.textBoxAT.Size = new System.Drawing.Size(295, 22);
             this.textBoxAT.TabIndex = 0;
             // 
             // richTextBoxATDebug
@@ -235,6 +237,17 @@
             this.buttonReconnect.Text = "Reconnect";
             this.buttonReconnect.UseVisualStyleBackColor = true;
             this.buttonReconnect.Click += new System.EventHandler(this.buttonReconnect_Click);
+            // 
+            // comboBoxAT
+            // 
+            this.comboBoxAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxAT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxAT.FormattingEnabled = true;
+            this.comboBoxAT.Location = new System.Drawing.Point(429, 136);
+            this.comboBoxAT.Name = "comboBoxAT";
+            this.comboBoxAT.Size = new System.Drawing.Size(121, 24);
+            this.comboBoxAT.TabIndex = 2;
+            this.comboBoxAT.SelectedIndexChanged += new System.EventHandler(this.comboBoxAT_SelectedIndexChanged);
             // 
             // BLEDebug
             // 
@@ -291,6 +304,7 @@
         private System.Windows.Forms.TextBox textBoxAT;
         private System.Windows.Forms.RichTextBox richTextBoxATDebug;
         private System.Windows.Forms.Button buttonReconnect;
+        private System.Windows.Forms.ComboBox comboBoxAT;
     }
 }
 
