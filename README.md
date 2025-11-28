@@ -49,7 +49,7 @@ Otherwise, you will get errors/unstables when reading/writing flash.
 To test bridge:
 1) Connect to Air780e (USB-C jack at EG41B board) 
 2) Open terminal on appeared new third (or second) COM port. 
-3) in (Air780e micropython)[https://github.com/freshev/micropython/tree/master/ports/air780] mode use following script: 
+3) in [Air780e micropython](https://github.com/freshev/micropython/tree/master/ports/air780) mode use following script: 
 ```python
 from machine import UART
 import time
@@ -67,9 +67,9 @@ if u.any() > 0:
 
 ##  Notes
 * The new designed `BLEDebug` simple application can show debug output from BLE602 chip. See BLEDebug folder. 
-* Default lib `LPBX7Kernel` was rewritten to redirect chip debug log to Bluetooth. Also changes made in some project `.mk` files.
-* To make sure the firmware is working - compile and burn the firmware with `hfdbg_set_level(1)` at src/app_main.c 
-* In this case you should see `[UART]` (with garbage) message at EG41B main port (PC USB/RS232/RS485 converter configured with 115200, 8N1). 
+* Default lib `LPBX7Kernel` was rewritten to redirect chip debug log to Bluetooth. Also changes made in some project `.mk` files. 
+* To make sure the firmware is working - compile and burn the firmware with `hfdbg_set_level(1)` at src/app_main.c.
+In this case you should see `[UART]` (with garbage) message at EG41B main port (PC USB/RS232/RS485 converter configured with 115200, 8N1). 
 * To completely disable debug log compile and burn the firmware with `hfdbg_set_level(0)` at src/app_main.c 
 
 ## Known bugs
