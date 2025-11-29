@@ -34,7 +34,7 @@ Burn with `SimpleFlasher`:
 1) Execute `BLDevCube\BLDevCube.exe` 
 * Select `Partition table` to `.\chips\bl602\partition\partition_cfg_HF_2M_V2.0.01.toml` 
 * Select `Boot2 Bin` to `.\chips\bl602\bootloader_HF_2M_V3.0.12.bin` 
-* Select `Firmware Bin` to `..\out\lpt570_full_9600_7.bin` 
+* Select `Firmware Bin` to `..\out\lpt570_full_9600_8N1.bin` 
 
 2) Connect Elfin EG41B to PC via USB/RS232/RS485 converter. Wires from USB/RS232/RS485 converter to EG41B board MUST be short (not more then 5cm).
 Otherwise, you will get errors/unstables when reading/writing flash. 
