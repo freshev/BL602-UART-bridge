@@ -6,10 +6,11 @@
 DEBUG_VIA_BLE = 1
 BAUDRATE ?= 115200
 DATABITS = 8
+PARITY = N
+STOPBITS = 1
 
-$(info DEBUG_VIA_BLE is $(DEBUG_VIA_BLE))
-$(info BAUDRATE is $(BAUDRATE))
-$(info DATABITS is $(DATABITS))
+# $(info DEBUG_VIA_BLE is $(DEBUG_VIA_BLE))
+$(info UART 0/1 parameters: $(BAUDRATE), $(DATABITS)$(PARITY)$(STOPBITS))
 
 ifeq ($(PROJECT_NAME),lpt270)
 TARGET = __LPT270__
@@ -78,6 +79,24 @@ CFLAGS   += -DDATABITS=7
 else
 CFLAGS   += -DDATABITS=8
 endif
+
+ifeq ($(PARITY),N)
+CFLAGS   += -DPARITY=0
+else ifeq ($(PARITY),E)
+CFLAGS   += -DPARITY=1
+else ifeq ($(PARITY),O)
+CFLAGS   += -DPARITY=2
+else
+$(error PARITY should be "N"(None), "E"(Even) or "O"(Odd))
+endif
+
+ifeq ($(STOPBITS),1)
+CFLAGS   += -DSTOPBITS=1
+else ifeq ($(STOPBITS), 2)
+CFLAGS   += -DSTOPBITS=2
+endif
+
+# $(info $(CFLAGS)) 
 
 INCLUDE_COMPONENTS += $(SDK_VERSION) $(APPDIR)
 

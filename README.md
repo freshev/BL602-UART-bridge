@@ -20,12 +20,12 @@ git clone https://github.com/freshev/BL602-UART-bridge
 
 4. Run one of the following `makeXXX.bat`
 ```bash
-make9600_7.bat
-make9600_8.bat
-make115200_7.bat
-make115200_8.bat
+make_9600_7E1.bat
+make_9600_8N1.bat
+make_115200_7E1.bat
+make_115200_8N1.bat
 ```
-I.e. `make9600_7.bat` makes a binary firmware for UART 0 to 1 bridge with baudrate 9600, 7N1, etc.
+I.e. `make_9600_7E1.bat` makes a binary firmware for UART 0 to 1 bridge with baudrate 9600, 7-Even-1, etc.
    
 ## Burn firmware
 
@@ -66,15 +66,14 @@ if u.any() > 0:
 
 
 ##  Notes
-* The new designed `BLEDebug` simple application can show debug output from BLE602 chip. See BLEDebug folder. 
+* The new designed `BLEDebug` application can show debug output from BLE602 chip (Debug over Bluetooth). See BLEDebug folder. 
 * Default lib `LPBX7Kernel` was rewritten to redirect chip debug log to Bluetooth. Also changes made in some project `.mk` files. 
 * To make sure the firmware is working - compile and burn the firmware with `hfdbg_set_level(1)` at src/app_main.c.
 In this case you should see `[UART]` (with garbage) message at EG41B main port (PC USB/RS232/RS485 converter configured with 115200, 8N1). 
 * To completely disable debug log compile and burn the firmware with `hfdbg_set_level(0)` at src/app_main.c 
-
-## Known bugs
-* Testing 9600 7N1 mode with real devices failed. 
-* Testing 9600 8N1 mode with real devices success. 
+* BL602 GPIO21 connected to Air780 power.
+* BL602 GPIO12 connected to Air780 reset.
+* BL602 GPIO16 connected to internal EG41B UART/RS485 converter (DE/!RE pin).
 
 ## Copyrights
 * FreeRTOS Kernel V10.2.1 Copyright (C) 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. 

@@ -1,6 +1,12 @@
  /* 
  * Copyright (C) freshev@github.com
- */
+ Notes:
+ BL602 GPIO21 connected to Air780 power.
+ BL602 GPIO12 connected to Air780 reset.
+ BL602 GPIO16 connected to internal EG41B UART/RS485 converter (DE/!RE pin).
+*/
+
+ 
 
 #include <hsf.h>
 #include <stdlib.h>
@@ -90,7 +96,9 @@ void HSF_API HF_Debug(int debug_level, const char *format, ... ) {
   }  
 }
 
-/*void HF_Debug(int debug_level, const char *format, ...) {
+/*
+// Original HF_Debug
+void HF_Debug(int debug_level, const char *format, ...) {
   size_t len;
   hfuart_handle_t huart;
 
@@ -143,13 +151,11 @@ void app_init(void) {
 
 /*static int USER_FUNC uart_recv_callback(uint32_t event,char *data,uint32_t len,uint32_t buf_len) {
 	if(event == HFNET_UART0_DATA_READY) {
-	    bl_uart_data_send(0, '0');
+        // u_printf("[%d]uart 0 recv %d bytes data %d\n",event,len,buf_len);
 	    for(int i = 0; i < len; i++) bl_uart_data_send(1, data[i]);
 	}
-
 	else if(event == HFNET_UART1_DATA_READY) {
 		// u_printf("[%d]uart 1 recv %d bytes data %d\n",event,len,buf_len);
-		bl_uart_data_send(0, '1');
 		for(int i = 0; i < len; i++) bl_uart_data_send(0, data[i]);
 	}
 	if(hfsys_get_run_mode() == HFSYS_STATE_RUN_CMD)
@@ -234,8 +240,26 @@ USER_FUNC void uart_bridge(void* arg) {
 	#error DATABITS should be 7 or 8
 	#endif
 
-	hfuart_config(huart0, BAUDRATE, COMPARITY_NONE, DATABITS - 5, COMSTOPBITS_1, COMUARTNFC); // debug here
-	hfuart_config(huart1, BAUDRATE, COMPARITY_NONE, DATABITS - 5, COMSTOPBITS_1, COMUARTNFC); // debug here
+	#if (PARITY == 0) 
+	ENCOMPARITY_E parity = COMPARITY_NONE;
+	#elif (PARITY == 1) 
+	ENCOMPARITY_E parity = COMPARITY_EVEN;
+	#elif (PARITY == 2) 
+	ENCOMPARITY_E parity = COMPARITY_ODD;
+	#else
+	#error PARITY should be "N"(None), "E"(Even) or "O"(Odd)
+	#endif
+
+	#if (STOPBITS == 1) 
+	ENCOMSTOPBITS_E stopbits = COMSTOPBITS_1;
+	#elif (STOPBITS == 2) 
+	ENCOMSTOPBITS_E stopbits = COMSTOPBITS_2;
+	#else 
+	#error STOPBITS should be 1 or 2
+	#endif
+
+	hfuart_config(huart0, BAUDRATE, parity, DATABITS - 5, stopbits, COMUARTNFC); // debug here
+	hfuart_config(huart1, BAUDRATE, parity, DATABITS - 5, stopbits, COMUARTNFC); // debug here
 	
 	buf0 = (char*)hfmem_malloc(1000);
 	if(!buf0) {
@@ -248,16 +272,17 @@ USER_FUNC void uart_bridge(void* arg) {
 		goto exit_thread;
 	}
 
+	// int pid = 16;
 	while(1) {
-		recv_bytes = hfuart_recv(huart0, buf0, 1000, 1000);
+		recv_bytes = hfuart_recv(huart0, buf0, 1000, 3); // was 1000
 		if(recv_bytes > 0) {
 			for(int i = 0; i < recv_bytes; i++) bl_uart_data_send(1, buf0[i]);
 			if(hf_debug_level > 0) send_ind_data(0, (uint8_t*)buf0, recv_bytes);
 		}
-		recv_bytes = hfuart_recv(huart1, buf1, 1000, 1000);
+		recv_bytes = hfuart_recv(huart1, buf1, 1000, 3); // was 1000
 		if(recv_bytes > 0) {
-			for(int i = 0; i < recv_bytes; i++) bl_uart_data_send(0, buf1[i]);
-			if(hf_debug_level > 0) send_ind_data(1, (uint8_t*)buf1, recv_bytes);
+			for(int i = 0; i < recv_bytes; i++) bl_uart_data_send(0, buf1[i]); // here pin 16 (rts_cts for UART0) fired
+			if(hf_debug_level > 0) send_ind_data(1, (uint8_t*)buf1, recv_bytes);			
 		}
 	}
 	

@@ -35,12 +35,12 @@
             this.groupBoxUARTDebug = new System.Windows.Forms.GroupBox();
             this.richTextBoxUARTDebug = new System.Windows.Forms.RichTextBox();
             this.groupBoxATDebug = new System.Windows.Forms.GroupBox();
+            this.buttonClear = new System.Windows.Forms.Button();
             this.comboBoxAT = new System.Windows.Forms.ComboBox();
             this.buttonSendAT = new System.Windows.Forms.Button();
             this.textBoxAT = new System.Windows.Forms.TextBox();
             this.richTextBoxATDebug = new System.Windows.Forms.RichTextBox();
             this.buttonReconnect = new System.Windows.Forms.Button();
-            this.buttonClear = new System.Windows.Forms.Button();
             this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -193,6 +193,17 @@
             this.groupBoxATDebug.TabStop = false;
             this.groupBoxATDebug.Text = "AT Debug";
             // 
+            // buttonClear
+            // 
+            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClear.Location = new System.Drawing.Point(414, 214);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(81, 25);
+            this.buttonClear.TabIndex = 3;
+            this.buttonClear.Text = "Clear";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            // 
             // comboBoxAT
             // 
             this.comboBoxAT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -250,16 +261,6 @@
             this.buttonReconnect.Text = "Reconnect";
             this.buttonReconnect.UseVisualStyleBackColor = true;
             this.buttonReconnect.Click += new System.EventHandler(this.buttonReconnect_Click);
-            // 
-            // buttonClear
-            // 
-            this.buttonClear.Location = new System.Drawing.Point(414, 214);
-            this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(81, 25);
-            this.buttonClear.TabIndex = 3;
-            this.buttonClear.Text = "Clear";
-            this.buttonClear.UseVisualStyleBackColor = true;
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
             // BLEDebug
             // 
