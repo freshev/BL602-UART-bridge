@@ -78,3 +78,30 @@ In this case you should see `[UART]` (with garbage) message at EG41B main port (
 ## Copyrights
 * FreeRTOS Kernel V10.2.1 Copyright (C) 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
 * HiFlying HF-LPX70 SDK Copyright (C) 2017 ShangHai High-flying Electronics Technology Co.,Ltd.
+
+## Misc
+
+* BLEDebug screenshot
+<p align="center">
+  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/BLEDebug.jpg"/>
+</p>
+* EG41B Disassemble
+<p align="center">
+  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/EG41B_Disassemble.jpg"/>
+</p>
+* EG41B board front
+<p align="center">
+  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/EG41B_front.jpg"/>
+</p>
+* EG41B board back
+<p align="center">
+  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/EG41B_back.jpg"/>
+</p>
+* EG41B BL602 boot pins
+<p align="center">
+  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/BL602_boot.jpg"/>
+</p>
+* EG41B Air780e boot pins
+<p align="center">
+  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/Air780e_boot.jpg"/>
+</p>
