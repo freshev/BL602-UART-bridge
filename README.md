@@ -83,25 +83,25 @@ In this case you should see `[UART]` (with garbage) message at EG41B main port (
 
 * BLEDebug screenshot
 <p align="center">
-  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/BLEDebug.jpg"/>
+  <img src="https://github.com/freshev/BL602-UART-bridge/blob/master/docs/BLEDebug.jpg"/>
 </p>
 * EG41B Disassemble
 <p align="center">
-  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/EG41B_Disassemble.jpg"/>
+  <img src="https://github.com/freshev/BL602-UART-bridge/blob/master/docs/EG41B_Disassemble.jpg"/>
 </p>
 * EG41B board front
 <p align="center">
-  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/EG41B_front.jpg"/>
+  <img src="https://github.com/freshev/BL602-UART-bridge/blob/master/docs/EG41B_front.jpg"/>
 </p>
 * EG41B board back
 <p align="center">
-  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/EG41B_back.jpg"/>
+  <img src="https://github.com/freshev/BL602-UART-bridge/blob/master/docs/EG41B_back.jpg"/>
 </p>
 * EG41B BL602 boot pins
 <p align="center">
-  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/BL602_boot.jpg"/>
+  <img src="https://github.com/freshev/BL602-UART-bridge/blob/master/docs/BL602_boot.jpg"/>
 </p>
 * EG41B Air780e boot pins
 <p align="center">
-  <img src="https://github.com/BL602-UART-bridge/blob/master/docs/Air780e_boot.jpg"/>
+  <img src="https://github.com/freshev/BL602-UART-bridge/blob/master/docs/Air780e_boot.jpg"/>
 </p>
